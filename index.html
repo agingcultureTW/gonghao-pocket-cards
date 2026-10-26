@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一句話的共生｜口袋關鍵字卡</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FFFFFF; --ground:#F2F0EC; --ink:#1A1A1A; --soft:#5E5A55; --line:#DCD7CF;
+  --red:#E2382E; --blue:#1C4FA3; --black:#1A1A1A; --chip:#F6F3EE; --ok:#1C4FA3;
+  color-scheme: light;
+  box-sizing:border-box;
+  padding-top: env(safe-area-inset-top,0px);
+  padding-bottom: env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#22201E; --ground:#161514; --ink:#F3F0EB; --soft:#B8B2AA; --line:#3A3734;
+    --red:#FF6A5C; --blue:#7FA6F0; --black:#F3F0EB; --chip:#2C2A27; --ok:#7FA6F0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#22201E; --ground:#161514; --ink:#F3F0EB; --soft:#B8B2AA; --line:#3A3734;
+  --red:#FF6A5C; --blue:#7FA6F0; --black:#F3F0EB; --chip:#2C2A27; --ok:#7FA6F0;
+  color-scheme: dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{height:100%; scroll-padding-top: env(safe-area-inset-top,0px)}
+body{margin:0; min-height:100%; background:var(--ground); color:var(--ink);
+  font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Heiti TC",sans-serif;
+  font-size:17px; line-height:1.65; -webkit-text-size-adjust:100%;}
+button,input,textarea{font:inherit; color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue); outline-offset:2px}
+.wrap{max-width:560px; margin:0 auto; padding:20px 18px 120px}
+
+header h1{font-size:30px; font-weight:900; line-height:1.25; margin:8px 0 6px; letter-spacing:.02em}
+header p{margin:0; color:var(--soft); font-size:15px}
+
+.mine{margin:18px 0 22px; padding:14px 16px; background:var(--paper); border:1.5px solid var(--line); border-radius:14px}
+.mine label{display:block; font-weight:700; font-size:15px; margin-bottom:6px}
+.mine textarea{width:100%; min-height:56px; border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--ground); resize:vertical}
+.mine small{display:block; color:var(--soft); font-size:13px; margin-top:6px}
+
+.draw{width:100%; padding:16px; border:none; border-radius:14px; background:var(--ink); color:var(--paper); font-weight:900; font-size:19px; margin-bottom:18px}
+
+.deck{display:grid; grid-template-columns:repeat(2,1fr); gap:10px}
+.mini{aspect-ratio:16/9; background:var(--paper); border:1.5px solid var(--line); border-radius:12px;
+  display:flex; align-items:center; justify-content:center; font-weight:900; font-size:22px; padding:6px; text-align:center}
+.mini:active{transform:scale(.98)}
+.c-red{color:var(--red)} .c-blue{color:var(--blue)} .c-black{color:var(--black)}
+
+/* card view */
+.cardview{display:none}
+.cardview.on{display:block}
+.back{background:none; border:none; color:var(--soft); padding:6px 0; margin-bottom:6px; font-size:15px}
+.flip{perspective:1200px; margin-bottom:16px}
+.face{position:relative; width:100%; aspect-ratio:16/10; transform-style:preserve-3d; transition:transform .55s cubic-bezier(.2,.7,.2,1)}
+.face.turned{transform:rotateY(180deg)}
+.side{position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; background:var(--paper);
+  border:1.5px solid var(--line); border-radius:18px; display:flex; flex-direction:column; justify-content:center; padding:22px}
+.front{align-items:center; text-align:center}
+.front .kw{font-size:clamp(44px,15vw,72px); font-weight:900; line-height:1.1}
+.front .tap{position:absolute; bottom:14px; font-size:13px; color:var(--soft)}
+.backside{transform:rotateY(180deg)}
+.backside .q{font-size:20px; font-weight:700; line-height:1.55}
+.backside .kwsmall{font-weight:900; font-size:15px; margin-bottom:8px}
+@media (prefers-reduced-motion: reduce){ .face{transition:none} }
+
+.hint{background:var(--paper); border-left:5px solid var(--red); border-radius:10px; padding:12px 14px; margin-bottom:12px}
+.hint b{display:block; font-size:14px; margin-bottom:2px}
+.hint p{margin:0}
+.hint .src{color:var(--soft); font-size:13px}
+.hint.blue{border-left-color:var(--blue)}
+
+.primary{width:100%; padding:15px; border:none; border-radius:14px; background:var(--blue); color:#fff; font-weight:900; font-size:18px; margin-top:6px}
+.ghost{width:100%; padding:13px; border:1.5px solid var(--line); border-radius:14px; background:var(--paper); font-weight:700; margin-top:10px}
+
+/* form */
+.form{display:none; background:var(--paper); border:1.5px solid var(--line); border-radius:16px; padding:16px; margin-top:14px}
+.form.on{display:block}
+.form label{display:block; font-weight:700; font-size:15px; margin:12px 0 6px}
+.form label:first-child{margin-top:0}
+.form textarea,.form input[type=text]{width:100%; border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--ground)}
+.form textarea{min-height:84px; resize:vertical}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chips button{border:1px solid var(--line); background:var(--chip); border-radius:999px; padding:6px 12px; font-size:15px}
+.chips button[aria-pressed="true"]{background:var(--ink); color:var(--paper); border-color:var(--ink)}
+.toast{margin-top:10px; color:var(--ok); font-weight:700; min-height:1.6em}
+
+/* notes */
+.note{background:var(--paper); border:1.5px solid var(--line); border-radius:14px; padding:14px 16px; margin-bottom:10px}
+.note .say{font-size:18px; font-weight:700; margin:0 0 6px}
+.note .meta{color:var(--soft); font-size:14px; margin:0}
+.note .row{display:flex; justify-content:space-between; align-items:center; margin-top:8px}
+.note .kwtag{font-weight:900; font-size:14px}
+.note .del{background:none; border:none; color:var(--soft); font-size:14px; text-decoration:underline}
+.empty{color:var(--soft); background:var(--paper); border:1.5px dashed var(--line); border-radius:14px; padding:22px; text-align:center}
+#exportBox{width:100%; min-height:140px; border:1px solid var(--line); border-radius:10px; padding:10px; background:var(--paper); margin-top:10px; display:none}
+
+/* howto */
+.howto h2{font-size:22px; font-weight:900; margin:6px 0 10px}
+.howto .script{background:var(--paper); border:1.5px solid var(--line); border-radius:14px; padding:16px; font-size:17px}
+.howto ol{padding-left:1.3em; margin:8px 0 0}
+.howto li{margin-bottom:8px}
+.howto li b{display:block}
+.section{display:none}
+.section.on{display:block}
+
+/* tab bar */
+nav{position:fixed; left:0; right:0; bottom:0; background:var(--paper); border-top:1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom,0px); z-index:10}
+nav .in{max-width:560px; margin:0 auto; display:grid; grid-template-columns:repeat(3,1fr)}
+nav button{background:none; border:none; padding:12px 4px 10px; font-size:15px; color:var(--soft); font-weight:700}
+nav button[aria-current="page"]{color:var(--ink); box-shadow: inset 0 3px 0 var(--red)}
+nav .count{display:inline-block; min-width:1.5em; margin-left:4px; padding:0 6px; border-radius:999px; background:var(--chip); font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- Cards -->
+  <section id="sec-cards" class="section on" aria-label="關鍵字卡">
+    <div id="deckView">
+      <header>
+        <h1>一句話的共生</h1>
+        <p>共好行動會社的口袋關鍵字卡。挑一張卡，請對方想想：這個詞，會讓你想到生活裡的哪一句話？</p>
+      </header>
+
+      <div class="mine">
+        <label for="myLine">先寫下我自己的一句</label>
+        <textarea id="myLine" placeholder="例如 10/27 課堂上寫下的那句話"></textarea>
+        <small>開口前先分享自己的一句，再邀請對方。這句只存在你的手機裡。</small>
+      </div>
+
+      <button class="draw" id="drawBtn">抽一張卡</button>
+      <div class="deck" id="deck"></div>
+    </div>
+
+    <div class="cardview" id="cardView">
+      <button class="back" id="backBtn">‹ 回到所有卡片</button>
+      <div class="flip">
+        <div class="face" id="face" role="button" tabindex="0" aria-label="翻開卡片看提問">
+          <div class="side front"><div class="kw" id="kwBig"></div><div class="tap">點一下翻面</div></div>
+          <div class="side backside"><div class="kwsmall" id="kwSmall"></div><div class="q" id="qText"></div></div>
+        </div>
+      </div>
+
+      <div class="hint" id="myHint"><b>先說我的一句</b><p id="myHintText"></p></div>
+      <div class="hint blue" id="sampleHint" hidden><b>論壇聽到的一句</b><p id="sampleText"></p><p class="src" id="sampleSrc"></p></div>
+
+      <button class="primary" id="openForm">記下這一句</button>
+      <button class="ghost" id="nextCard">換一張卡</button>
+
+      <form class="form" id="form" autocomplete="off">
+        <label for="fSay">那句話（原話）</label>
+        <textarea id="fSay" required placeholder="照對方說的寫，不用修飾"></textarea>
+        <label>說的人</label>
+        <div class="chips" id="whoChips"></div>
+        <label for="fWhere">在哪裡、什麼時候說的</label>
+        <input type="text" id="fWhere" placeholder="例如：巷口早餐店，每天早上">
+        <label>引用方式</label>
+        <div class="chips" id="useChips"></div>
+        <button class="primary" type="submit">存進我的採集</button>
+        <div class="toast" id="toast" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Notes -->
+  <section id="sec-notes" class="section" aria-label="我的採集">
+    <header><h1>我的採集</h1><p>存在這支手機裡。11/3 上課前，按下方按鈕複製全部，貼到會社群組。</p></header>
+    <div id="notes" style="margin-top:16px"></div>
+    <button class="primary" id="exportBtn">複製全部，貼到群組</button>
+    <textarea id="exportBox" readonly aria-label="採集內容"></textarea>
+    <div class="toast" id="exportToast" role="status" aria-live="polite"></div>
+  </section>
+
+  <!-- How to -->
+  <section id="sec-howto" class="section howto" aria-label="怎麼開口">
+    <h2>30 秒說明</h2>
+    <div class="script">「你好，我是永和社大共好行動會社的○○。我們在收集社區裡『大家一起好好生活』的一句話，可能是鄰居見面的一句招呼、店家順口的一句關心，或家人常掛在嘴邊、讓你覺得暖暖的一句話。這些句子會在信義公益基金會的成果發表上，變成我們共同創作的作品。你願意分享一句嗎？可以不寫名字。」</div>
+    <h2 style="margin-top:22px">互動原則</h2>
+    <ol>
+      <li><b>先聊生活，再問金句</b>可以先分享自己的一句，再邀請對方。</li>
+      <li><b>記原話</b>不美化、不改寫，必要時複述一次確認。</li>
+      <li><b>說明用途，取得同意</b>可以不具名，也可以拒絕。</li>
+      <li><b>不追問隱私與傷痛</b>對方停下來，我們就停下來。</li>
+      <li><b>拍照、錄音前先問</b></li>
+      <li><b>謝謝對方</b>並告訴他在哪裡可以看到作品。</li>
+      <li><b>採集也是一次相遇</b>留意對方說完後的表情與故事，回到課堂分享。</li>
+    </ol>
+  </section>
+</div>
+
+<nav aria-label="主選單"><div class="in">
+  <button data-tab="cards" aria-current="page">卡片</button>
+  <button data-tab="notes">我的採集<span class="count" id="count">0</span></button>
+  <button data-tab="howto">怎麼開口</button>
+</div></nav>
+
+<script>
+const CARDS = [
+  {k:"鄰里互助", c:"black", q:"住你附近的人，平常會互相幫什麼小忙？那時候大家會說什麼？",
+   s:"不要擔心，伯仔會替妳看顧。", src:"屏東鹽埔土地公廟的廟公，對心裡擔心著的長輩說"},
+  {k:"生活感", c:"black", q:"你一天裡最喜歡的一個時刻是什麼？那時候常聽到誰說什麼？",
+   s:"不是把長輩帶來上課，而是把生活留下來。", src:"嘉義東石・港墘暖一點"},
+  {k:"日常移動", c:"black", q:"你每天走的那條路上，有沒有固定會打招呼的人？他們通常怎麼跟你打招呼？"},
+  {k:"信任", c:"blue", q:"有沒有一個人，你會很放心把小事交給他？他常掛在嘴邊的是哪一句話？"},
+  {k:"共助", c:"red", q:"最近有沒有一件事，是大家各出一點力一起完成的？過程中有誰說了什麼？"},
+  {k:"連結", c:"red", q:"有沒有一個人，本來不認識、後來變熟了？你們是從哪一句話開始聊起來的？"},
+  {k:"社區感", c:"black", q:"什麼時候，你會覺得「這裡是我的地方」？那時候身邊有人說了什麼？"},
+  {k:"公共空間", c:"black", q:"你最常去的公園、市場或店家是哪裡？那裡的人常跟你說什麼？"},
+  {k:"安居", c:"black", q:"住在這裡，什麼事情讓你覺得安心？有沒有一句話讓你特別有這種感覺？"},
+  {k:"共學共做", c:"red", q:"有沒有跟別人一起學、一起做的經驗？那時候大家常說什麼？",
+   s:"我們吃到這麼多歲，沒有被這麼多眼光看著。", src:"屏東鹽北日照的長輩，被孩子請教種菜時說"}
+];
+const WHO = ["鄰居","店家老闆","社大同學","社大老師","孩子或學生","青年","長輩","照顧者","志工","上班族","新住民","里長或社區工作者","醫療或照服人員","家人","其他"];
+const USE = ["可具名","不具名","不公開"];
+
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+let notes = store.get("gh-notes", []);
+let current = 0;
+const $ = id => document.getElementById(id);
+
+/* deck */
+const deck = $("deck");
+CARDS.forEach((c,i)=>{
+  const b = document.createElement("button");
+  b.className = "mini c-" + c.c; b.textContent = c.k;
+  b.addEventListener("click", ()=>openCard(i));
+  deck.appendChild(b);
+});
+$("drawBtn").addEventListener("click", ()=>{
+  let i; do{ i = Math.floor(Math.random()*CARDS.length); }while(CARDS.length>1 && i===current && $("cardView").classList.contains("on"));
+  openCard(i);
+});
+
+/* my line */
+const myLine = $("myLine");
+myLine.value = store.get("gh-myline", "");
+myLine.addEventListener("input", ()=>store.set("gh-myline", myLine.value));
+
+function openCard(i){
+  current = i; const c = CARDS[i];
+  $("deckView").style.display = "none";
+  $("cardView").classList.add("on");
+  const face = $("face"); face.classList.remove("turned");
+  $("kwBig").textContent = c.k; $("kwBig").className = "kw c-" + c.c;
+  $("kwSmall").textContent = c.k; $("kwSmall").className = "kwsmall c-" + c.c;
+  $("qText").textContent = c.q;
+  const mine = myLine.value.trim();
+  $("myHintText").textContent = mine ? "「" + mine + "」" : "還沒寫下自己的一句？回到卡片頁最上方寫一句，開口時會更自在。";
+  if(c.s){ $("sampleHint").hidden = false; $("sampleText").textContent = "「" + c.s + "」"; $("sampleSrc").textContent = c.src; }
+  else { $("sampleHint").hidden = true; }
+  $("form").classList.remove("on"); $("toast").textContent = "";
+  window.scrollTo(0,0);
+}
+function flip(){ $("face").classList.toggle("turned"); }
+$("face").addEventListener("click", flip);
+$("face").addEventListener("keydown", e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); flip(); } });
+$("backBtn").addEventListener("click", ()=>{ $("cardView").classList.remove("on"); $("deckView").style.display = ""; window.scrollTo(0,0); });
+$("nextCard").addEventListener("click", ()=>openCard((current+1)%CARDS.length));
+
+/* chips */
+function chipGroup(el, items, multi){
+  items.forEach(t=>{
+    const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.setAttribute("aria-pressed","false");
+    b.addEventListener("click", ()=>{
+      if(!multi) el.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed","false"));
+      b.setAttribute("aria-pressed", b.getAttribute("aria-pressed")==="true" && multi ? "false" : "true");
+    });
+    el.appendChild(b);
+  });
+}
+chipGroup($("whoChips"), WHO, false);
+chipGroup($("useChips"), USE, false);
+const picked = el => { const b = el.querySelector('[aria-pressed="true"]'); return b ? b.textContent : ""; };
+
+$("openForm").addEventListener("click", ()=>{ const f=$("form"); f.classList.add("on"); f.scrollIntoView({behavior:"smooth", block:"start"}); $("fSay").focus(); });
+$("form").addEventListener("submit", e=>{
+  e.preventDefault();
+  const say = $("fSay").value.trim();
+  if(!say){ $("toast").textContent = "請先寫下那句話。"; return; }
+  const use = picked($("useChips"));
+  if(!use){ $("toast").textContent = "請選擇引用方式。"; return; }
+  notes.unshift({ id: Date.now(), kw: CARDS[current].k, say, who: picked($("whoChips")) || "未填", where: $("fWhere").value.trim(), use });
+  store.set("gh-notes", notes); renderNotes();
+  $("fSay").value = ""; $("fWhere").value = "";
+  document.querySelectorAll("#form .chips button").forEach(b=>b.setAttribute("aria-pressed","false"));
+  $("toast").textContent = "已存進我的採集。";
+});
+
+/* notes */
+function renderNotes(){
+  $("count").textContent = notes.length;
+  const box = $("notes"); box.textContent = "";
+  if(!notes.length){
+    const d = document.createElement("div"); d.className = "empty";
+    d.textContent = "還沒有採集。到「卡片」挑一張，記下聽到的第一句話。"; box.appendChild(d); return;
+  }
+  notes.forEach(n=>{
+    const card = document.createElement("div"); card.className = "note";
+    const s = document.createElement("p"); s.className = "say"; s.textContent = "「" + n.say + "」";
+    const m = document.createElement("p"); m.className = "meta";
+    m.textContent = [n.who, n.where, n.use].filter(Boolean).join("｜");
+    const row = document.createElement("div"); row.className = "row";
+    const tag = document.createElement("span"); tag.className = "kwtag c-" + (CARDS.find(c=>c.k===n.kw)||{c:"black"}).c; tag.textContent = n.kw;
+    const del = document.createElement("button"); del.className = "del"; del.textContent = "刪除";
+    del.addEventListener("click", ()=>{ if(confirm("刪除這一句？")){ notes = notes.filter(x=>x.id!==n.id); store.set("gh-notes", notes); renderNotes(); } });
+    row.append(tag, del); card.append(s, m, row); box.appendChild(card);
+  });
+}
+renderNotes();
+
+$("exportBtn").addEventListener("click", async ()=>{
+  if(!notes.length){ $("exportToast").textContent = "目前還沒有採集可以複製。"; return; }
+  const txt = "【一句話的共生】我的採集（" + notes.length + " 句）\n\n" + notes.slice().reverse().map((n,i)=>
+    (i+1) + ". 「" + n.say + "」\n   說的人：" + n.who + (n.where ? "｜" + n.where : "") + "\n   關鍵字：" + n.kw + "｜引用：" + n.use).join("\n\n");
+  const box = $("exportBox"); box.value = txt;
+  try{ await navigator.clipboard.writeText(txt); $("exportToast").textContent = "已複製，打開群組貼上就可以。"; box.style.display = "none"; }
+  catch(e){ box.style.display = "block"; box.focus(); box.select(); $("exportToast").textContent = "這支手機不能自動複製，請長按下方文字、全選後複製。"; }
+});
+
+/* tabs */
+const tabs = document.querySelectorAll("nav button");
+function show(name){
+  document.querySelectorAll(".section").forEach(s=>s.classList.toggle("on", s.id === "sec-" + name));
+  tabs.forEach(t=>{ if(t.dataset.tab===name) t.setAttribute("aria-current","page"); else t.removeAttribute("aria-current"); });
+  window.scrollTo(0,0);
+}
+tabs.forEach(t=>t.addEventListener("click", ()=>show(t.dataset.tab)));
+const h = location.hash.replace("#","");
+if(["cards","notes","howto"].includes(h)) show(h);
+</script>
+</body>
+</html>
