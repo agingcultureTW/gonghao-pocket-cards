@@ -76,6 +76,7 @@ header p{margin:0; color:var(--soft); font-size:15px}
 .hint p{margin:0}
 .hint .src{color:var(--soft); font-size:13px}
 .hint.blue{border-left-color:var(--blue)}
+#clubHint{border-left-color:var(--ink)}
 
 .primary{width:100%; padding:15px; border:none; border-radius:14px; background:var(--blue); color:#fff; font-weight:900; font-size:18px; margin-top:6px}
 .ghost{width:100%; padding:13px; border:1.5px solid var(--line); border-radius:14px; background:var(--paper); font-weight:700; margin-top:10px}
@@ -128,13 +129,13 @@ nav .count{display:inline-block; min-width:1.5em; margin-left:4px; padding:0 6px
     <div id="deckView">
       <header>
         <h1>一句話的共生</h1>
-        <p>共好行動會社的口袋關鍵字卡。挑一張卡，請對方想想：這個詞，會讓你想到生活裡的哪一句話？</p>
+        <p>在共好行動會社，我們一起上課、一起做事，也在下課後彼此照應。帶著這份經驗出門，挑一張卡，先說說會社裡的故事，再請對方想想：這個詞，會讓你想到生活裡的哪一句話？</p>
       </header>
 
       <div class="mine">
-        <label for="myLine">先寫下我自己的一句</label>
-        <textarea id="myLine" placeholder="例如 10/27 課堂上寫下的那句話"></textarea>
-        <small>開口前先分享自己的一句，再邀請對方。這句只存在你的手機裡。</small>
+        <label for="myLine">先寫下我在會社裡的一句</label>
+        <textarea id="myLine" placeholder="例如 10/27 課堂上寫下的，夥伴彼此幫忙時說的那句話"></textarea>
+        <small>開口前先分享自己在社大、在會社裡聽到的一句，再邀請對方。這句只存在你的手機裡。</small>
       </div>
 
       <button class="draw" id="drawBtn">抽一張卡</button>
@@ -150,6 +151,7 @@ nav .count{display:inline-block; min-width:1.5em; margin-left:4px; padding:0 6px
         </div>
       </div>
 
+      <div class="hint" id="clubHint"><b>先想想：在共好行動會社</b><p id="clubText"></p></div>
       <div class="hint" id="myHint"><b>先說我的一句</b><p id="myHintText"></p></div>
       <div class="hint blue" id="sampleHint" hidden><b>論壇聽到的一句</b><p id="sampleText"></p><p class="src" id="sampleSrc"></p></div>
 
@@ -183,7 +185,14 @@ nav .count{display:inline-block; min-width:1.5em; margin-left:4px; padding:0 6px
   <!-- How to -->
   <section id="sec-howto" class="section howto" aria-label="怎麼開口">
     <h2>30 秒說明</h2>
-    <div class="script">「你好，我是永和社大共好行動會社的○○。我們在收集社區裡『大家一起好好生活』的一句話，可能是鄰居見面的一句招呼、店家順口的一句關心，或家人常掛在嘴邊、讓你覺得暖暖的一句話。這些句子會在信義公益基金會的成果發表上，變成我們共同創作的作品。你願意分享一句嗎？可以不寫名字。」</div>
+    <div class="script">「你好，我是永和社大共好行動會社的○○。我們在社大一起上課、一起做事，發現很多照顧，其實就藏在下課後的一句話裡。現在想收集社區裡『大家一起好好生活』的一句話，可能是鄰居見面的一句招呼、店家順口的一句關心，或家人常掛在嘴邊、讓你覺得暖暖的一句話。這些句子會在信義公益基金會的成果發表上，變成我們共同創作的作品。你願意分享一句嗎？可以不寫名字。」</div>
+    <h2 style="margin-top:22px">我們的社大式共生</h2>
+    <div class="script">
+      <p style="margin:0 0 8px"><b>以學習為途徑</b>：上課是讓人走出家門的起點。</p>
+      <p style="margin:0 0 8px"><b>以參與為目的</b>：不分年齡、身分，一起進來做事。</p>
+      <p style="margin:0 0 8px"><b>以關係為策略</b>：下課後的一句話、一頓飯，讓關係一層一層疊上去。</p>
+      <p style="margin:0;color:var(--soft);font-size:15px">社大的教室、課程和社團，就是我們的「溫泉與啤酒」。聊天時，可以從這些經驗說起。</p>
+    </div>
     <h2 style="margin-top:22px">互動原則</h2>
     <ol>
       <li><b>先聊生活，再問金句</b>可以先分享自己的一句，再邀請對方。</li>
@@ -205,18 +214,18 @@ nav .count{display:inline-block; min-width:1.5em; margin-left:4px; padding:0 6px
 
 <script>
 const CARDS = [
-  {k:"鄰里互助", c:"black", q:"住你附近的人，平常會互相幫什麼小忙？那時候大家會說什麼？",
+  {k:"鄰里互助", m:"誰順手幫過你一個小忙？那時候他說了什麼？", c:"black", q:"住你附近的人，平常會互相幫什麼小忙？那時候大家會說什麼？",
    s:"不要擔心，伯仔會替妳看顧。", src:"屏東鹽埔土地公廟的廟公，對心裡擔心著的長輩說"},
-  {k:"生活感", c:"black", q:"你一天裡最喜歡的一個時刻是什麼？那時候常聽到誰說什麼？",
+  {k:"生活感", m:"上課前後，哪個時刻最有生活感？", c:"black", q:"你一天裡最喜歡的一個時刻是什麼？那時候常聽到誰說什麼？",
    s:"不是把長輩帶來上課，而是把生活留下來。", src:"嘉義東石・港墘暖一點"},
-  {k:"日常移動", c:"black", q:"你每天走的那條路上，有沒有固定會打招呼的人？他們通常怎麼跟你打招呼？"},
-  {k:"信任", c:"blue", q:"有沒有一個人，你會很放心把小事交給他？他常掛在嘴邊的是哪一句話？"},
-  {k:"共助", c:"red", q:"最近有沒有一件事，是大家各出一點力一起完成的？過程中有誰說了什麼？"},
-  {k:"連結", c:"red", q:"有沒有一個人，本來不認識、後來變熟了？你們是從哪一句話開始聊起來的？"},
-  {k:"社區感", c:"black", q:"什麼時候，你會覺得「這裡是我的地方」？那時候身邊有人說了什麼？"},
-  {k:"公共空間", c:"black", q:"你最常去的公園、市場或店家是哪裡？那裡的人常跟你說什麼？"},
-  {k:"安居", c:"black", q:"住在這裡，什麼事情讓你覺得安心？有沒有一句話讓你特別有這種感覺？"},
-  {k:"共學共做", c:"red", q:"有沒有跟別人一起學、一起做的經驗？那時候大家常說什麼？",
+  {k:"日常移動", m:"來社大的路上，你會遇到誰、跟誰打招呼？", c:"black", q:"你每天走的那條路上，有沒有固定會打招呼的人？他們通常怎麼跟你打招呼？"},
+  {k:"信任", m:"你會放心把什麼事交給會社的夥伴？", c:"blue", q:"有沒有一個人，你會很放心把小事交給他？他常掛在嘴邊的是哪一句話？"},
+  {k:"共助", m:"有哪件事，是大家各出一點力一起完成的？", c:"red", q:"最近有沒有一件事，是大家各出一點力一起完成的？過程中有誰說了什麼？"},
+  {k:"連結", m:"哪位夥伴是從一句話開始熟起來的？", c:"red", q:"有沒有一個人，本來不認識、後來變熟了？你們是從哪一句話開始聊起來的？"},
+  {k:"歸屬感", m:"什麼時候讓你有種「我回家了／這裡是我的地方」的感覺？", c:"black", q:"什麼時候，你會覺得「這裡是我的地方」？那時候身邊有人說了什麼？"},
+  {k:"公共空間", m:"教室、走廊或是街角的長椅，哪裡會是相遇停留的地方？", c:"black", q:"你最常去的公園、市場或店家是哪裡？那裡的人常跟你說什麼？"},
+  {k:"安居", m:"在會社裡，什麼讓你覺得安心、自在？", c:"black", q:"住在這裡，什麼事情讓你覺得安心？有沒有一句話讓你特別有這種感覺？"},
+  {k:"共學共做", m:"一起學、一起做的時候，大家常掛在嘴邊的是哪句話？", c:"red", q:"有沒有跟別人一起學、一起做的經驗？那時候大家常說什麼？",
    s:"我們吃到這麼多歲，沒有被這麼多眼光看著。", src:"屏東鹽北日照的長輩，被孩子請教種菜時說"}
 ];
 const WHO = ["鄰居","店家老闆","社大同學","社大老師","孩子或學生","青年","長輩","照顧者","志工","上班族","新住民","里長或社區工作者","醫療或照服人員","家人","其他"];
@@ -256,6 +265,7 @@ function openCard(i){
   $("kwBig").textContent = c.k; $("kwBig").className = "kw c-" + c.c;
   $("kwSmall").textContent = c.k; $("kwSmall").className = "kwsmall c-" + c.c;
   $("qText").textContent = c.q;
+  $("clubText").textContent = c.m;
   const mine = myLine.value.trim();
   $("myHintText").textContent = mine ? "「" + mine + "」" : "還沒寫下自己的一句？回到卡片頁最上方寫一句，開口時會更自在。";
   if(c.s){ $("sampleHint").hidden = false; $("sampleText").textContent = "「" + c.s + "」"; $("sampleSrc").textContent = c.src; }
